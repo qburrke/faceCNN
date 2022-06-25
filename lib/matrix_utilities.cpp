@@ -1,5 +1,7 @@
+#include "matrix.hpp"
+
 bool m_check(Mat*& a, Mat*& b){
-    if(a.m == b.m && a.n == a.n){ return true; }
+    if(a->m == b->m && a->n == a->n){ return true; }
     return false;
 }
 
@@ -12,7 +14,7 @@ Mat* m_create(int m, int n){
 }
 
 Mat* m_copy(Mat* mat){
-    Mat* copy = m_create(mat->rows, mat->cols);
+    Mat* copy = m_create(mat->m, mat->n);
     for(int i = 0; i < mat->m; i++){
         for(int j = 0; j < mat->n; j++){
             copy->elements[i][j] = mat->elements[i][j];
@@ -25,7 +27,7 @@ void m_free(Mat* mat){
     for(int i = 0; i < mat->m; i++){ delete[] mat->elements[i]; }
     delete[] mat->elements;
     delete mat;
-    m = nullptr;
+    mat = nullptr;
 }
 
 void m_save(const char* path, Mat* mat){
@@ -34,7 +36,7 @@ void m_save(const char* path, Mat* mat){
     for(int i = 0; i < mat->m; i++){
         file << "\n";
         for(int j = 0; j < mat->n; j++){
-            file << m->elements[i][j]; file << " ";
+            file << mat->elements[i][j]; file << " ";
         }
     }
     file.close();
@@ -63,7 +65,6 @@ void m_fill(Mat*& mat, int num){
 }
 
 void m_rand(Mat*& mat){
-    srand(NULL);
     for(int i = 0; i < mat->m; i++){
         for(int j = 0; j < mat->n; j++){
             mat->elements[i][j] = (float)(rand()) / (float)(RAND_MAX / 2.0f) - 1.0f;
