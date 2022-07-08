@@ -7,67 +7,64 @@
 #define NET_FILE "data/net.data"
 
 namespace net {
-template <typename T>
 struct Net {
-	mat::Mat<T>* A0;
+	mat::Mat* A0;
 
-	mat::Mat<T>* W1;
-	mat::Mat<T>* B1;
-	mat::Mat<T>* Z1;
-	mat::Mat<T>* A1;
+	mat::Mat* W1;
+	mat::Mat* B1;
+	mat::Mat* Z1;
+	mat::Mat* A1;
 
-	mat::Mat<T>* W2;
-	mat::Mat<T>* B2;
-	mat::Mat<T>* Z2;
-	mat::Mat<T>* A2;
+	mat::Mat* W2;
+	mat::Mat* B2;
+	mat::Mat* Z2;
+	mat::Mat* A2;
 
-	mat::Mat<T>* W3;
-	mat::Mat<T>* B3;
-	mat::Mat<T>* Z3;
-	mat::Mat<T>* A3;
+	mat::Mat* W3;
+	mat::Mat* B3;
+	mat::Mat* Z3;
+	mat::Mat* A3;
 
-	mat::Mat<T>* dW1;
-	mat::Mat<T>* dB1;
-	mat::Mat<T>* dW2;
-	mat::Mat<T>* dB2;
-	mat::Mat<T>* dW3;
-	mat::Mat<T>* dB3;
-	mat::Mat<T>* Y;
+	mat::Mat* dW1;
+	mat::Mat* dB1;
+	mat::Mat* dW2;
+	mat::Mat* dB2;
+	mat::Mat* dW3;
+	mat::Mat* dB3;
+	mat::Mat* Y;
 };
 
-template <typename T>
-void create(Net<T>& net, int A0, int A1, int A2, int A3){
-    net.A0 = mat::create<T>(A0, 1);
-    net.W1 = mat::create<T>(A1, A0);
-    net.B1 = mat::create<T>(A1, 1);
-    net.Z1 = mat::create<T>(A1, 1);
-    net.A1 = mat::create<T>(A1, 1);
-    net.W2 = mat::create<T>(A2, A1);
-    net.B2 = mat::create<T>(A2, 1);
-    net.Z2 = mat::create<T>(A2, 1);
-    net.A2 = mat::create<T>(A2, 1);
-    net.W3 = mat::create<T>(A3, A2);
-    net.B3 = mat::create<T>(A3, 1);
-    net.Z3 = mat::create<T>(A3, 1);
-    net.A3 = mat::create<T>(A3, 1);
-    net.dW1 =mat::create<T>(A1, A0);
-    net.dB1 = mat::create<T>(A1, 1);
-    net.dW2 = mat::create<T>(A2, A1);
-    net.dB2 = mat::create<T>(A2, 1);
-    net.dW3 = mat::create<T>(A3, A2);
-    net.dB3 = mat::create<T>(A3, 1);
-    net.Y = mat::create<T>(A3, 1);
+void create(Net& net, int A0, int A1, int A2, int A3){
+    net.A0 = mat::create(A0, 1);
+    net.W1 = mat::create(A1, A0);
+    net.B1 = mat::create(A1, 1);
+    net.Z1 = mat::create(A1, 1);
+    net.A1 = mat::create(A1, 1);
+    net.W2 = mat::create(A2, A1);
+    net.B2 = mat::create(A2, 1);
+    net.Z2 = mat::create(A2, 1);
+    net.A2 = mat::create(A2, 1);
+    net.W3 = mat::create(A3, A2);
+    net.B3 = mat::create(A3, 1);
+    net.Z3 = mat::create(A3, 1);
+    net.A3 = mat::create(A3, 1);
+    net.dW1 =mat::create(A1, A0);
+    net.dB1 = mat::create(A1, 1);
+    net.dW2 = mat::create(A2, A1);
+    net.dB2 = mat::create(A2, 1);
+    net.dW3 = mat::create(A3, A2);
+    net.dB3 = mat::create(A3, 1);
+    net.Y = mat::create(A3, 1);
 }
 
-template <typename T>
-void load(const char* path, Net<T>& net){
+void load(const char* path, Net& net){
     std::ifstream file(path, std::ios::in);
     int A0, A1, A2, A3, temp;
     file >> A0; file >> temp;
     file >> A1; file >> temp;
     file >> A2; file >> temp;
     file >> A3; file >> temp;
-    create<T>(net, A0, A1, A2, A3);
+    create(net, A0, A1, A2, A3);
     
     for(int i = 0; i < A1; i++){
         for(int j = 0; j < A0; j++){ file >> net.W1->elements[i][j]; }
@@ -84,8 +81,7 @@ void load(const char* path, Net<T>& net){
     file.close();
 }
 
-template <typename T>
-void save(const char* path, Net<T>& net){
+void save(const char* path, Net& net){
     std::ofstream file(path, std::ios::out);
     file << net.A0->m; file << " "; file << net.A0->n; file << " ";
     file << net.A1->m; file << " "; file << net.A1->n; file << " ";
@@ -111,55 +107,49 @@ void save(const char* path, Net<T>& net){
     file.close();
 }
 
-template <typename T>
-void rand(Net<T>& net){
-    mat::mrand<T>(net.W1);
-    mat::mrand<T>(net.W2);
-    mat::mrand<T>(net.W3);
+void rand(Net& net){
+    mat::mrand(net.W1);
+    mat::mrand(net.W2);
+    mat::mrand(net.W3);
 }
 
-template <typename T>
-void n_free(Net<T>& net){
-    mat::free<T>(net.A0);
-    mat::free<T>(net.W1);
-    mat::free<T>(net.B1);
-    mat::free<T>(net.Z1);
-    mat::free<T>(net.A1);
-    mat::free<T>(net.W2);
-    mat::free<T>(net.B2);
-    mat::free<T>(net.Z2);
-    mat::free<T>(net.A2);
-    mat::free<T>(net.W3);
-    mat::free<T>(net.B3);
-    mat::free<T>(net.Z3);
-    mat::free<T>(net.A3);
-    mat::free<T>(net.dW1);
-    mat::free<T>(net.dB1);
-    mat::free<T>(net.dW2);
-    mat::free<T>(net.dB2);
-    mat::free<T>(net.dW3);
-    mat::free<T>(net.dB3);
-    mat::free<T>(net.Y);
+void n_free(Net& net){
+    mat::free(net.A0);
+    mat::free(net.W1);
+    mat::free(net.B1);
+    mat::free(net.Z1);
+    mat::free(net.A1);
+    mat::free(net.W2);
+    mat::free(net.B2);
+    mat::free(net.Z2);
+    mat::free(net.A2);
+    mat::free(net.W3);
+    mat::free(net.B3);
+    mat::free(net.Z3);
+    mat::free(net.A3);
+    mat::free(net.dW1);
+    mat::free(net.dB1);
+    mat::free(net.dW2);
+    mat::free(net.dB2);
+    mat::free(net.dW3);
+    mat::free(net.dB3);
+    mat::free(net.Y);
 }
 
-template <typename T>
-T ReLU(T x){
+float ReLU(float x){
     if(x < 0){ return 0; }
     return x;
 }
 
-template <typename T>
-void activation(mat::Mat<T>*&, mat::Mat<T>*&){
+void activation(mat::Mat*&, mat::Mat*&){
 
 }
 
-template <typename T>
-void dactivation(mat::Mat<T>*&, mat::Mat<T>*&){
+void dactivation(mat::Mat*&, mat::Mat*&){
 
 }
 
-template <typename T>
-int argmax(mat::Mat<T>*& mat){
+int argmax(mat::Mat*& mat){
     int max = mat->elements[0][0];
     for(int i = 1; i < mat->m; i++){
         for(int j = 0; j < mat->n; j++){
@@ -169,13 +159,11 @@ int argmax(mat::Mat<T>*& mat){
     return max;
 }
 
-template <typename T>
-void forward_prop(Net<T>&){
+void forward_prop(Net&){
 
 }
 
-template <typename T>
-void back_prop(Net<T>&){
+void back_prop(Net&){
 
 }
 }
